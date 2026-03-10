@@ -205,7 +205,20 @@ const TimeInputManual: React.FC<TimeInputManualProps> = ({
                     id: 'datetime.time',
                     defaultMessage: 'Time',
                 })}
+                aria-invalid={timeInputError}
+                aria-describedby={timeInputError ? 'time_input_error' : undefined}
             />
+            {timeInputError && (
+                <span
+                    id='time_input_error'
+                    className='date-time-input__error-text'
+                >
+                    {formatMessage({
+                        id: 'datetime.invalid_time_format',
+                        defaultMessage: 'Enter a valid time (e.g. {example}).',
+                    }, {example: isMilitaryTime ? '13:40' : '1:40 PM'})}
+                </span>
+            )}
         </div>
     );
 };
@@ -341,11 +354,17 @@ const DateTimeInputContainer: React.FC<Props> = ({
         let result: Moment;
         if (modifiers.today) {
             const baseTime = getCurrentMomentForTimezone(timezone);
-            if (minDateTime && isBeforeTime(baseTime, effectiveTime)) {
-                baseTime.hour(effectiveTime.hours());
-                baseTime.minute(effectiveTime.minutes());
+            if (allowManualTimeEntry) {
+                // Preserve exact manual-entry time when selecting today
+                baseTime.hour(effectiveTime.hour()).minute(effectiveTime.minute()).second(0).millisecond(0);
+                result = baseTime;
+            } else {
+                if (minDateTime && isBeforeTime(baseTime, effectiveTime)) {
+                    baseTime.hour(effectiveTime.hours());
+                    baseTime.minute(effectiveTime.minutes());
+                }
+                result = getRoundedTime(baseTime, timePickerInterval);
             }
-            result = getRoundedTime(baseTime, timePickerInterval);
         } else if (timezone) {
             // Use moment.tz array syntax to create moment directly in timezone
             // This is the same pattern used by manual entry (which works correctly)
@@ -488,7 +507,21 @@ const DateTimeInputContainer: React.FC<Props> = ({
                             className: 'time-menu-scrollable',
                         }}
                     >
-                        {timeOptions.map((option, index) => (
+                        {timeOptions.length === 0 ? (
+                            <Menu.Item
+                                key='no-times'
+                                id='time_option_none'
+                                labels={
+                                    <span className='date-time-input__no-times'>
+                                        {formatMessage({
+                                            id: 'datetime.no_times_available',
+                                            defaultMessage: 'No times available for this date. Select a different date.',
+                                        })}
+                                    </span>
+                                }
+                                isDestructive={false}
+                            />
+                        ) : timeOptions.map((option, index) => (
                             <Menu.Item
                                 key={index}
                                 id={`time_option_${index}`}

@@ -60,8 +60,8 @@ func processRecapJob(logger mlog.LoggerIFace, job *model.Job, storeInstance stor
 			setProgress(progress)
 		}
 
-		// Process the channel
-		result, err := appInstance.ProcessRecapChannel(request.EmptyContext(logger), recapID, channelID, userID, agentID)
+		// Process the channel — pass user session so session-dependent code (e.g. auto-translation) works correctly
+		result, err := appInstance.ProcessRecapChannel(request.EmptyContext(logger).WithSession(&model.Session{UserId: userID}), recapID, channelID, userID, agentID)
 		if err != nil {
 			logger.Warn("Failed to process channel",
 				mlog.String("channel_id", channelID),

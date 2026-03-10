@@ -25,10 +25,10 @@ type Props = {
 };
 
 // Helper to get timezone abbreviation (e.g., "MST", "EDT")
-const getTimezoneAbbreviation = (timezone: string): string => {
+const getTimezoneAbbreviation = (timezone: string, locale: string): string => {
     try {
         const now = new Date();
-        const formatter = new Intl.DateTimeFormat('en-US', {
+        const formatter = new Intl.DateTimeFormat(locale, {
             timeZone: timezone,
             timeZoneName: 'short',
         });
@@ -46,7 +46,7 @@ const AppsFormDateTimeField: React.FC<Props> = ({
     onChange,
     setIsInteracting,
 }) => {
-    const {formatMessage} = useIntl();
+    const {formatMessage, locale} = useIntl();
     const userTimezone = useSelector(getCurrentTimezone);
 
     // datetime_config is pre-merged with deprecated top-level fields by createSanitizedField
@@ -103,7 +103,7 @@ const AppsFormDateTimeField: React.FC<Props> = ({
                 <div className='apps-form-datetime-timezone'>
                     {formatMessage(
                         {id: 'datetime.timezone_indicator', defaultMessage: 'Times in {timezone}'},
-                        {timezone: getTimezoneAbbreviation(timezone)},
+                        {timezone: getTimezoneAbbreviation(timezone, locale)},
                     )}
                 </div>
             )}

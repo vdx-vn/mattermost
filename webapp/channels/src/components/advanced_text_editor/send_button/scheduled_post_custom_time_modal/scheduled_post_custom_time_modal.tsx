@@ -66,7 +66,7 @@ export default function ScheduledPostCustomTimeModal({channelId, onExited, onCon
         } else {
             onExited();
         }
-    }, [onConfirm, onExited]);
+    }, [onConfirm, onExited, dispatch, currentUserId, userTimezone]);
 
     const bodySuffix = useMemo(() => {
         return (

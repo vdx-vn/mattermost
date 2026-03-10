@@ -476,11 +476,11 @@ describe('Interactive Dialog - Date and DateTime Fields', () => {
             .should('have.class', 'rdp-day_disabled').and('be.disabled');
     });
 
-    it('MM-T2530K - time dropdown filters past times when min_date uses sub-day offset', () => {
+    it('MM-T2530K - time dropdown filters past times when min_date uses sub-day offset', function() {
         // Guard: '+2H' wraps to tomorrow after 10 PM — skip to avoid false failures
         const currentHour = new Date().getHours();
         if (currentHour >= 22) {
-            return;
+            this.skip();
         }
 
         // # Open minmax dialog — "Time-Filtered DateTime" has min_date: '+2H'

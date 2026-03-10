@@ -4254,6 +4254,8 @@
   "datetime.select_date": "Select date",
   "datetime.time": "Time",
   "datetime.timezone_indicator": "Times in {timezone}",
+  "datetime.invalid_time_format": "Enter a valid time (e.g. {example}).",
+  "datetime.no_times_available": "No times available for this date. Select a different date.",
   "datetime.today": "today",
   "datetime.yesterday": "yesterday",
   "deactivate_member_modal.deactivate": "Deactivate",
