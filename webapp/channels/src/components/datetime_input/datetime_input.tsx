@@ -3,7 +3,7 @@
 
 import type {Moment} from 'moment-timezone';
 import moment from 'moment-timezone';
-import React, {useEffect, useState, useCallback, useRef} from 'react';
+import React, {useEffect, useState, useCallback, useRef, useMemo} from 'react';
 import type {DayModifiers, DayPickerProps} from 'react-day-picker';
 import {useIntl} from 'react-intl';
 import {useSelector} from 'react-redux';
@@ -21,9 +21,6 @@ import {isKeyPressed} from 'utils/keyboard';
 import {getCurrentMomentForTimezone, isBeforeTime} from 'utils/timezone';
 
 const CUSTOM_STATUS_TIME_PICKER_INTERVALS_IN_MINUTES = 30;
-
-// Re-exported from date_utils for backward compatibility
-export {getRoundedTime} from 'utils/date_utils';
 
 export const getTimeInIntervals = (startTime: Moment, interval = CUSTOM_STATUS_TIME_PICKER_INTERVALS_IN_MINUTES): Moment[] => {
     let time = moment(startTime);
@@ -121,6 +118,7 @@ const TimeInputManual: React.FC<TimeInputManualProps> = ({
     const {formatMessage} = useIntl();
     const [timeInputValue, setTimeInputValue] = useState<string>('');
     const [timeInputError, setTimeInputError] = useState<boolean>(false);
+    const [timeClampedMessage, setTimeClampedMessage] = useState<string | null>(null);
     const timeInputRef = useRef<HTMLInputElement>(null);
 
     // Sync input value with time prop changes
@@ -136,6 +134,7 @@ const TimeInputManual: React.FC<TimeInputManualProps> = ({
     const handleTimeInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setTimeInputValue(event.target.value);
         setTimeInputError(false); // Clear error as user types
+        setTimeClampedMessage(null); // Clear clamp notice as user types
     }, []);
 
     const handleTimeInputBlur = useCallback(() => {
@@ -170,17 +169,24 @@ const TimeInputManual: React.FC<TimeInputManualProps> = ({
             targetMoment = baseMoment;
         }
 
+        let clamped = false;
         if (minDateTime && targetMoment.isBefore(minDateTime, 'minute')) {
             targetMoment = minDateTime.clone();
+            clamped = true;
         }
         if (maxDateTime && targetMoment.isAfter(maxDateTime, 'minute')) {
             targetMoment = maxDateTime.clone();
+            clamped = true;
         }
 
         // Valid time - update (no auto-advance, no exclusion checking)
         onTimeChange(targetMoment);
         setTimeInputError(false);
-    }, [timeInputValue, time, timezone, onTimeChange, minDateTime, maxDateTime]);
+        setTimeClampedMessage(clamped ? formatMessage({
+            id: 'datetime.time_adjusted',
+            defaultMessage: 'Time adjusted to nearest allowed time.',
+        }) : null);
+    }, [timeInputValue, time, timezone, onTimeChange, minDateTime, maxDateTime, formatMessage]);
 
     const handleTimeInputKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
         if (isKeyPressed(event as any, Constants.KeyCodes.ENTER)) {
@@ -200,13 +206,13 @@ const TimeInputManual: React.FC<TimeInputManualProps> = ({
                 onChange={handleTimeInputChange}
                 onBlur={handleTimeInputBlur}
                 onKeyDown={handleTimeInputKeyDown}
-                placeholder={isMilitaryTime ? '13:40' : '1:40 PM'}
+                placeholder={isMilitaryTime ? '13:40' : moment().hour(13).minute(40).format('LT')}
                 aria-label={formatMessage({
                     id: 'datetime.time',
                     defaultMessage: 'Time',
                 })}
                 aria-invalid={timeInputError}
-                aria-describedby={timeInputError ? 'time_input_error' : undefined}
+                aria-describedby={timeInputError ? 'time_input_error' : timeClampedMessage ? 'time_input_clamped' : undefined}
             />
             {timeInputError && (
                 <span
@@ -216,7 +222,15 @@ const TimeInputManual: React.FC<TimeInputManualProps> = ({
                     {formatMessage({
                         id: 'datetime.invalid_time_format',
                         defaultMessage: 'Enter a valid time (e.g. {example}).',
-                    }, {example: isMilitaryTime ? '13:40' : '1:40 PM'})}
+                    }, {example: isMilitaryTime ? '13:40' : moment().hour(13).minute(40).format('LT')})}
+                </span>
+            )}
+            {timeClampedMessage && !timeInputError && (
+                <span
+                    id='time_input_clamped'
+                    className='date-time-input__info-text'
+                >
+                    {timeClampedMessage}
                 </span>
             )}
         </div>
@@ -246,7 +260,6 @@ const DateTimeInputContainer: React.FC<Props> = ({
     minDateTime,
     maxDateTime,
 }: Props) => {
-    const currentTime = getCurrentMomentForTimezone(timezone);
     const displayTime = time; // No automatic default - field stays null until user selects
     const locale = useSelector(getCurrentLocale);
     const isMilitaryTime = useSelector(isUseMilitaryTime);
@@ -338,7 +351,7 @@ const DateTimeInputContainer: React.FC<Props> = ({
         setTimeOptions(options);
     }, [displayTime, timePickerInterval, timezone, minDateTime, maxDateTime]);
 
-    const handleDayChange = (day: Date, modifiers: DayModifiers) => {
+    const handleDayChange = useCallback((day: Date, modifiers: DayModifiers) => {
         // Use existing time if available, otherwise use current time in display timezone
         let effectiveTime = displayTime;
         if (!effectiveTime) {
@@ -394,7 +407,7 @@ const DateTimeInputContainer: React.FC<Props> = ({
 
         handleChange(result);
         handlePopperOpenState(false);
-    };
+    }, [displayTime, allowManualTimeEntry, timezone, timePickerInterval, minDateTime, maxDateTime, handleChange, handlePopperOpenState]);
 
     const formatDate = (date: Moment): string => {
         if (relativeDate) {
@@ -412,7 +425,7 @@ const DateTimeInputContainer: React.FC<Props> = ({
         <i className='icon-clock-outline'/>
     );
 
-    const disabledDays = (() => {
+    const disabledDays = useMemo(() => {
         const matchers: Array<{before: Date} | {after: Date}> = [];
         const minDate = minDateTime ? momentToLocalDate(minDateTime.clone().startOf('day')) : undefined;
         const maxDate = maxDateTime ? momentToLocalDate(maxDateTime.clone().startOf('day')) : undefined;
@@ -423,7 +436,7 @@ const DateTimeInputContainer: React.FC<Props> = ({
             matchers.push({after: maxDate});
         }
         return matchers.length > 0 ? matchers : undefined;
-    })();
+    }, [minDateTime, maxDateTime]);
 
     const datePickerProps: DayPickerProps = {
         initialFocus: isPopperOpen,
@@ -512,6 +525,7 @@ const DateTimeInputContainer: React.FC<Props> = ({
                             <Menu.Item
                                 key='no-times'
                                 id='time_option_none'
+                                disabled={true}
                                 labels={
                                     <span className='date-time-input__no-times'>
                                         {formatMessage({
@@ -520,7 +534,6 @@ const DateTimeInputContainer: React.FC<Props> = ({
                                         })}
                                     </span>
                                 }
-                                isDestructive={false}
                             />
                         ) : timeOptions.map((option, index) => (
                             <Menu.Item

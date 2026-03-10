@@ -32,7 +32,7 @@ import AppsFormHeader from './apps_form_header';
 import './apps_form_component.scss';
 
 // Default time interval for DateTime fields in minutes
-const DEFAULT_TIME_INTERVAL_MINUTES = 60;
+export const DEFAULT_TIME_INTERVAL_MINUTES = 60;
 
 export type AppsFormProps = {
     form: AppForm;

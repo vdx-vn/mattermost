@@ -417,9 +417,11 @@ describe('Interactive Dialog - Date and DateTime Fields', () => {
         openDatePicker('Constrained DateTime');
 
         // * Verify a past date is disabled (2 days ago to avoid midnight boundary)
-        const pastDate = new Date();
-        pastDate.setDate(pastDate.getDate() - 2);
-        const needsPrevMonth = pastDate.getMonth() !== new Date().getMonth();
+        // Single `now` reference avoids month-boundary race between two Date() calls
+        const now = new Date();
+        const pastDate = new Date(now);
+        pastDate.setDate(now.getDate() - 2);
+        const needsPrevMonth = pastDate.getMonth() !== now.getMonth();
         if (needsPrevMonth) {
             cy.get('.rdp .rdp-nav_button_previous').click();
         }

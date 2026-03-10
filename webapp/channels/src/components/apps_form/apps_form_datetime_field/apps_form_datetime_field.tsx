@@ -14,8 +14,7 @@ import DateTimeInput from 'components/datetime_input/datetime_input';
 
 import {stringToMoment, momentToString} from 'utils/date_utils';
 
-// Default time interval for DateTime fields in minutes
-const DEFAULT_TIME_INTERVAL_MINUTES = 60;
+import {DEFAULT_TIME_INTERVAL_MINUTES} from '../apps_form_component';
 
 type Props = {
     field: AppField;

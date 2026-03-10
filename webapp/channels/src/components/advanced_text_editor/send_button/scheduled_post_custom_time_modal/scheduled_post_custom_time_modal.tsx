@@ -32,7 +32,7 @@ export default function ScheduledPostCustomTimeModal({channelId, onExited, onCon
     const {formatMessage} = useIntl();
     const [errorMessage, setErrorMessage] = useState<string>();
     const userTimezone = useSelector(getCurrentTimezone);
-    const now = moment().tz(userTimezone);
+    const now = useMemo(() => moment().tz(userTimezone), [userTimezone]);
     const currentUserId = useSelector(getCurrentUserId);
     const dispatch = useDispatch();
     const [selectedDateTime, setSelectedDateTime] = useState<Moment>(() => {

@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import type {DateTimeConfig} from './apps';
 import type {MessageAttachment} from './message_attachments';
 import type {IDMappedObjects} from './utilities';
 
@@ -198,13 +199,7 @@ export type DialogElement = {
     refresh?: boolean;
 
     // Date/datetime configuration (preferred)
-    datetime_config?: {
-        time_interval?: number;
-        min_date?: string;
-        max_date?: string;
-        location_timezone?: string;
-        allow_manual_time_entry?: boolean;
-    };
+    datetime_config?: DateTimeConfig;
 
     /** @deprecated Use datetime_config.min_date instead */
     min_date?: string;

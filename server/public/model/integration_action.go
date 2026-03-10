@@ -686,8 +686,11 @@ func (e *DialogElement) IsValid() error {
 		multiErr = multierror.Append(multiErr, checkMaxLength("Default", e.Default, DialogElementTextMaxLength))
 		multiErr = multierror.Append(multiErr, checkMaxLength("Placeholder", e.Placeholder, DialogElementTextMaxLength))
 		multiErr = multierror.Append(multiErr, validateDateTimeFormat(e.Default))
-		multiErr = multierror.Append(multiErr, validateDateTimeFormat(e.MinDate))
-		multiErr = multierror.Append(multiErr, validateDateTimeFormat(e.MaxDate))
+		// Only validate top-level min/max when DateTimeConfig is absent (deprecated path)
+		if e.DateTimeConfig == nil {
+			multiErr = multierror.Append(multiErr, validateDateTimeFormat(e.MinDate))
+			multiErr = multierror.Append(multiErr, validateDateTimeFormat(e.MaxDate))
+		}
 		// Validate time_interval for datetime fields
 		timeInterval := e.TimeInterval
 		if e.DateTimeConfig != nil && e.DateTimeConfig.TimeInterval != 0 {
@@ -790,7 +793,7 @@ func validateDateFormat(dateStr string) error {
 	for _, format := range commonDateTimeFormats {
 		if parsedTime, err := time.Parse(format, dateStr); err == nil {
 			dateOnly := parsedTime.Format(ISODateFormat)
-			return fmt.Errorf("date field received datetime format %q, only date portion %q will be used. Consider using date format instead", dateStr, dateOnly)
+			return fmt.Errorf("date field received datetime value %q; only ISO date format (YYYY-MM-DD) is accepted. Use %q instead", dateStr, dateOnly)
 		}
 	}
 
