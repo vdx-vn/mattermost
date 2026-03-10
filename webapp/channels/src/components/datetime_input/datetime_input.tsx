@@ -314,10 +314,13 @@ const DateTimeInputContainer: React.FC<Props> = ({
         }
     }, [time, timePickerInterval, handleChange, allowManualTimeEntry]);
 
-    const setTimeAndOptions = () => {
+    useEffect(() => {
+        // Compute fresh currentTime inside the effect so it never goes stale between renders
+        const freshCurrentTime = getCurrentMomentForTimezone(timezone);
+
         // Use displayTime if available, otherwise use currentTime for generating dropdown
         // This ensures dropdown always has options even for optional fields with null time
-        const timeForOptions = displayTime || currentTime;
+        const timeForOptions = displayTime || freshCurrentTime;
 
         // Use clone() to preserve timezone information
         const startTime = timeForOptions.clone().startOf('day');
@@ -333,9 +336,7 @@ const DateTimeInputContainer: React.FC<Props> = ({
         }
 
         setTimeOptions(options);
-    };
-
-    useEffect(setTimeAndOptions, [displayTime, timePickerInterval, timezone, minDateTime, maxDateTime]);
+    }, [displayTime, timePickerInterval, timezone, minDateTime, maxDateTime]);
 
     const handleDayChange = (day: Date, modifiers: DayModifiers) => {
         // Use existing time if available, otherwise use current time in display timezone

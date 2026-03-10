@@ -36,6 +36,7 @@ type Props = {
     errorText?: string | React.ReactNode;
     timePickerInterval?: number;
     minDateTime?: Moment;
+    maxDateTime?: Moment;
 };
 
 export default function DateTimePickerModal({
@@ -56,6 +57,7 @@ export default function DateTimePickerModal({
     errorText,
     timePickerInterval,
     minDateTime,
+    maxDateTime,
 }: Props) {
     const userTimezone = useSelector(getCurrentTimezone);
     const currentTime = getCurrentMomentForTimezone(userTimezone);
@@ -127,6 +129,7 @@ export default function DateTimePickerModal({
                 relativeDate={relativeDate}
                 timePickerInterval={timePickerInterval}
                 minDateTime={minDateTime}
+                maxDateTime={maxDateTime}
             />
 
             {bodySuffix}
