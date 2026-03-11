@@ -21,7 +21,7 @@ import ModalSuggestionList from 'components/suggestion/modal_suggestion_list';
 import SuggestionList from 'components/suggestion/suggestion_list';
 import LoadingSpinner from 'components/widgets/loading/loading_spinner';
 
-import {filterEmptyOptions} from 'utils/apps';
+import {filterEmptyOptions, DEFAULT_DATETIME_INTERVAL_MINUTES} from 'utils/apps';
 import {momentToString, stringToMoment, resolveRelativeDate} from 'utils/date_utils';
 
 import type {DoAppCallResult} from 'types/apps';
@@ -30,9 +30,6 @@ import AppsFormField from './apps_form_field';
 import AppsFormHeader from './apps_form_header';
 
 import './apps_form_component.scss';
-
-// Default time interval for DateTime fields in minutes
-export const DEFAULT_TIME_INTERVAL_MINUTES = 60;
 
 export type AppsFormProps = {
     form: AppForm;
@@ -170,7 +167,7 @@ const createSanitizedField = (field: AppField): AppField => {
         // Sanitize time_interval
         const interval = mergedConfig.time_interval;
         if (interval === undefined || typeof interval !== 'number' || interval <= 0 || interval > 1440 || 1440 % interval !== 0) {
-            mergedConfig.time_interval = DEFAULT_TIME_INTERVAL_MINUTES;
+            mergedConfig.time_interval = DEFAULT_DATETIME_INTERVAL_MINUTES;
         }
 
         // Note: min_date/max_date are NOT run through getSafeDateValue here.
@@ -226,7 +223,7 @@ const initFormValues = (form: AppForm, timezone?: string): AppFormValues => {
                 const currentTime = timezone ? moment.tz(timezone) : moment();
 
                 // Use sanitized time_interval from datetime_config (canonical location after sanitization)
-                const timePickerInterval = field.datetime_config?.time_interval ?? DEFAULT_TIME_INTERVAL_MINUTES;
+                const timePickerInterval = field.datetime_config?.time_interval ?? DEFAULT_DATETIME_INTERVAL_MINUTES;
 
                 // Round up to next time interval
                 const minutesMod = currentTime.minutes() % timePickerInterval;

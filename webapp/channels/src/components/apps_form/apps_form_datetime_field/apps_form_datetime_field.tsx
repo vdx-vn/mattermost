@@ -12,9 +12,8 @@ import {getCurrentTimezone} from 'mattermost-redux/selectors/entities/timezone';
 
 import DateTimeInput from 'components/datetime_input/datetime_input';
 
+import {DEFAULT_DATETIME_INTERVAL_MINUTES} from 'utils/apps';
 import {stringToMoment, momentToString} from 'utils/date_utils';
-
-import {DEFAULT_TIME_INTERVAL_MINUTES} from '../apps_form_component';
 
 type Props = {
     field: AppField;
@@ -51,7 +50,7 @@ const AppsFormDateTimeField: React.FC<Props> = ({
     // datetime_config is pre-merged with deprecated top-level fields by createSanitizedField
     const config = field.datetime_config || {};
     const locationTimezone = config.location_timezone;
-    const timePickerInterval = config.time_interval ?? DEFAULT_TIME_INTERVAL_MINUTES;
+    const timePickerInterval = config.time_interval ?? DEFAULT_DATETIME_INTERVAL_MINUTES;
     const allowManualTimeEntry = config.allow_manual_time_entry ?? false;
 
     // Use location_timezone if specified, otherwise fall back to user's timezone

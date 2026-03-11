@@ -14,6 +14,7 @@ import {isUseMilitaryTime} from 'selectors/preferences';
 import DatePicker from 'components/date_picker';
 import * as Menu from 'components/menu';
 
+import {DEFAULT_DATETIME_INTERVAL_MINUTES} from 'utils/apps';
 import Constants from 'utils/constants';
 import {formatDateForDisplay, getRoundedTime, momentToLocalDate} from 'utils/date_utils';
 import {relativeFormatDate} from 'utils/datetime';
@@ -362,7 +363,7 @@ const DateTimeInputContainer: React.FC<Props> = ({
             // For dropdown, use rounded time
             effectiveTime = allowManualTimeEntry ?
                 nowInTimezone :
-                getRoundedTime(nowInTimezone, timePickerInterval ?? 60);
+                getRoundedTime(nowInTimezone, timePickerInterval ?? DEFAULT_DATETIME_INTERVAL_MINUTES);
         }
 
         let result: Moment;
