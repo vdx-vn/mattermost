@@ -23,7 +23,7 @@ import {getCurrentMomentForTimezone, isBeforeTime} from 'utils/timezone';
 
 const CUSTOM_STATUS_TIME_PICKER_INTERVALS_IN_MINUTES = 30;
 
-function getTimeAriaDescribedBy(timeInputError: boolean, timeClampedMessage: string): string | undefined {
+function getTimeAriaDescribedBy(timeInputError: boolean, timeClampedMessage: string | null): string | undefined {
     if (timeInputError) {
         return 'time_input_error';
     }
