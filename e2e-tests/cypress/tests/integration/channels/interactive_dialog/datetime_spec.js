@@ -29,7 +29,7 @@ describe('Interactive Dialog - Date and DateTime Fields', () => {
     const openDatePicker = (formGroupName) => {
         cy.get('#appsModal').within(() => {
             cy.contains('.form-group', formGroupName).within(() => {
-                cy.get('.date-time-input').click();
+                cy.get('.date-time-input').first().click();
             });
         });
 
