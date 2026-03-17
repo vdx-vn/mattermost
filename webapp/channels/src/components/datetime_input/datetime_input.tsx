@@ -23,6 +23,16 @@ import {getCurrentMomentForTimezone, isBeforeTime} from 'utils/timezone';
 
 const CUSTOM_STATUS_TIME_PICKER_INTERVALS_IN_MINUTES = 30;
 
+function getTimeAriaDescribedBy(timeInputError: boolean, timeClampedMessage: string): string | undefined {
+    if (timeInputError) {
+        return 'time_input_error';
+    }
+    if (timeClampedMessage) {
+        return 'time_input_clamped';
+    }
+    return undefined;
+}
+
 export const getTimeInIntervals = (startTime: Moment, interval = CUSTOM_STATUS_TIME_PICKER_INTERVALS_IN_MINUTES): Moment[] => {
     let time = moment(startTime);
     const nextDay = moment(startTime).add(1, 'days').startOf('day');
@@ -213,7 +223,7 @@ const TimeInputManual: React.FC<TimeInputManualProps> = ({
                     defaultMessage: 'Time',
                 })}
                 aria-invalid={timeInputError}
-                aria-describedby={timeInputError ? 'time_input_error' : timeClampedMessage ? 'time_input_clamped' : undefined}
+                aria-describedby={getTimeAriaDescribedBy(timeInputError, timeClampedMessage)}
             />
             {timeInputError && (
                 <span

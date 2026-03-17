@@ -5,9 +5,8 @@ import moment from 'moment-timezone';
 import React from 'react';
 
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
-import * as timezoneUtils from 'utils/timezone';
-
 import {getRoundedTime} from 'utils/date_utils';
+import * as timezoneUtils from 'utils/timezone';
 
 import DateTimeInput, {getTimeInIntervals, parseTimeString} from './datetime_input';
 
