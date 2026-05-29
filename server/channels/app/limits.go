@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	maxUsersLimit     = 2_500
-	maxUsersHardLimit = 5_000
+	maxUsersLimit     = 0
+	maxUsersHardLimit = 0
 )
 
 func (a *App) GetServerLimits() (*model.ServerLimits, *model.AppError) {
@@ -19,7 +19,7 @@ func (a *App) GetServerLimits() (*model.ServerLimits, *model.AppError) {
 	license := a.License()
 
 	if license == nil && maxUsersLimit > 0 {
-		// Enforce hard-coded limits for unlicensed servers (no grace period).
+		// Unlicensed servers can opt into a static cap by setting these constants.
 		limits.MaxUsersLimit = maxUsersLimit
 		limits.MaxUsersHardLimit = maxUsersHardLimit
 	} else if license != nil && license.IsSeatCountEnforced && license.Features != nil && license.Features.Users != nil {
