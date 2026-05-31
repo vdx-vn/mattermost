@@ -11,6 +11,7 @@ on:
     branches:
       - master
       - main
+      - custom-*
     paths:
       - ".github/workflows/build-ghcr-from-source.yml"
       - "server/**"
