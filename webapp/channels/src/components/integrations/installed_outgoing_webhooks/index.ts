@@ -23,7 +23,9 @@ import InstalledOutgoingWebhook from './installed_outgoing_webhooks';
 function mapStateToProps(state: GlobalState) {
     const config = getConfig(state);
     const teamId = getCurrentTeamId(state);
-    const canManageOthersWebhooks = haveITeamPermission(state, teamId, Permissions.MANAGE_OTHERS_OUTGOING_WEBHOOKS);
+    const canManageOthersWebhooks =
+        haveITeamPermission(state, teamId, Permissions.MANAGE_OTHERS_OUTGOING_WEBHOOKS) ||
+        haveITeamPermission(state, teamId, Permissions.MANAGE_OTHERS_WEBHOOKS);
     const outgoingHooks = getOutgoingHooks(state);
     const outgoingWebhooks = Object.keys(outgoingHooks).
         map((key) => outgoingHooks[key]).

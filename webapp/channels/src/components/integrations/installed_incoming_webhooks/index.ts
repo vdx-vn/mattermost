@@ -25,7 +25,9 @@ function mapStateToProps(state: GlobalState) {
     const incomingHooks = getFilteredIncomingHooks(state);
     const incomingHooksTotalCount = getIncomingHooksTotalCount(state);
     const config = getConfig(state);
-    const canManageOthersWebhooks = haveITeamPermission(state, teamId, Permissions.MANAGE_OTHERS_INCOMING_WEBHOOKS);
+    const canManageOthersWebhooks =
+        haveITeamPermission(state, teamId, Permissions.MANAGE_OTHERS_INCOMING_WEBHOOKS) ||
+        haveITeamPermission(state, teamId, Permissions.MANAGE_OTHERS_WEBHOOKS);
     const enableIncomingWebhooks = config.EnableIncomingWebhooks === 'true';
 
     return {

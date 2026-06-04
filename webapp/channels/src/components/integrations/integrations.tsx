@@ -49,7 +49,7 @@ export default class Integrations extends React.PureComponent <Props> {
             options.push(
                 <TeamPermissionGate
                     teamId={this.props.team.id}
-                    permissions={[Permissions.MANAGE_INCOMING_WEBHOOKS]}
+                    permissions={[Permissions.MANAGE_INCOMING_WEBHOOKS, Permissions.MANAGE_WEBHOOKS]}
                     key='incomingWebhookPermission'
                 >
                     <IntegrationOption
@@ -77,7 +77,7 @@ export default class Integrations extends React.PureComponent <Props> {
             options.push(
                 <TeamPermissionGate
                     teamId={this.props.team.id}
-                    permissions={[Permissions.MANAGE_OUTGOING_WEBHOOKS]}
+                    permissions={[Permissions.MANAGE_OUTGOING_WEBHOOKS, Permissions.MANAGE_WEBHOOKS]}
                     key='outgoingWebhookPermission'
                 >
                     <IntegrationOption

@@ -46,7 +46,12 @@ function mapStateToProps(state: GlobalState) {
     const enableOAuthServiceProvider = config.EnableOAuthServiceProvider === 'true';
     const enableOutgoingWebhooks = config.EnableOutgoingWebhooks === 'true';
     const enablePluginMarketplace = isMarketplaceEnabled(state);
-    const canManageTeamIntegrations = (haveICurrentTeamPermission(state, Permissions.MANAGE_SLASH_COMMANDS) || haveICurrentTeamPermission(state, Permissions.MANAGE_OAUTH) || haveICurrentTeamPermission(state, Permissions.MANAGE_INCOMING_WEBHOOKS) || haveICurrentTeamPermission(state, Permissions.MANAGE_OUTGOING_WEBHOOKS));
+    const canManageTeamIntegrations = (
+        haveICurrentTeamPermission(state, Permissions.MANAGE_SLASH_COMMANDS) ||
+        haveICurrentTeamPermission(state, Permissions.MANAGE_WEBHOOKS) ||
+        haveICurrentTeamPermission(state, Permissions.MANAGE_INCOMING_WEBHOOKS) ||
+        haveICurrentTeamPermission(state, Permissions.MANAGE_OUTGOING_WEBHOOKS)
+    );
     const canManageSystemBots = (haveISystemPermission(state, {permission: Permissions.MANAGE_BOTS}) || haveISystemPermission(state, {permission: Permissions.MANAGE_OTHERS_BOTS}));
     const canManageIntegrations = canManageTeamIntegrations || canManageSystemBots;
     const step = getInt(state, OnboardingTaskCategory, OnboardingTasksName.VISIT_SYSTEM_CONSOLE, 0);
