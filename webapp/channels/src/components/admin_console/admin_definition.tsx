@@ -5165,14 +5165,12 @@ const AdminDefinition: AdminDefinitionType = {
         ),
         sectionTitle: defineMessage({id: 'admin.sidebar.integrations', defaultMessage: 'Integrations'}),
         id: 'integrations',
-        isHidden: it.not(it.userHasReadPermissionOnSomeResources(RESOURCE_KEYS.INTEGRATIONS)),
+        isHidden: false,
         subsections: {
             integration_management: {
                 url: 'integrations/integration_management',
                 title: defineMessage({id: 'admin.integrations.integrationManagement', defaultMessage: 'Integration Management'}),
-                isHidden: it.all(
-                    it.not(it.userHasReadPermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
-                ),
+                isHidden: false,
                 schema: {
                     id: 'CustomIntegrationSettings',
                     name: defineMessage({id: 'admin.integrations.integrationManagement.title', defaultMessage: 'Integration Management'}),
@@ -5193,7 +5191,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 ),
                             },
                             help_text_markdown: false,
-                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                            isDisabled: false,
                         },
                         {
                             type: 'bool',
@@ -5211,7 +5209,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 ),
                             },
                             help_text_markdown: false,
-                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                            isDisabled: false,
                         },
                         {
                             type: 'bool',
@@ -5224,7 +5222,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 ),
                             },
                             help_text_markdown: false,
-                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                            isDisabled: false,
                         },
                         {
                             type: 'bool',
@@ -5242,7 +5240,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 ),
                             },
                             help_text_markdown: false,
-                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                            isDisabled: false,
                         },
                         {
                             type: 'bool',
@@ -5260,7 +5258,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 ),
                             },
                             help_text_markdown: false,
-                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                            isDisabled: false,
                             isHidden: it.licensedForFeature('Cloud'),
                         },
                         {
@@ -5303,21 +5301,21 @@ const AdminDefinition: AdminDefinitionType = {
                                 ),
                             },
                             help_text_markdown: false,
-                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                            isDisabled: false,
                         },
                         {
                             type: 'bool',
                             key: 'ServiceSettings.EnablePostUsernameOverride',
                             label: defineMessage({id: 'admin.service.overrideTitle', defaultMessage: 'Enable integrations to override usernames:'}),
                             help_text: defineMessage({id: 'admin.service.overrideDescription', defaultMessage: 'When true, webhooks, slash commands and other integrations will be allowed to change the username they are posting as. Note: Combined with allowing integrations to override profile picture icons, users may be able to perform phishing attacks by attempting to impersonate other users.'}),
-                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                            isDisabled: false,
                         },
                         {
                             type: 'bool',
                             key: 'ServiceSettings.EnablePostIconOverride',
                             label: defineMessage({id: 'admin.service.iconTitle', defaultMessage: 'Enable integrations to override profile picture icons:'}),
                             help_text: defineMessage({id: 'admin.service.iconDescription', defaultMessage: 'When true, webhooks, slash commands and other integrations will be allowed to change the profile picture they post with. Note: Combined with allowing integrations to override usernames, users may be able to perform phishing attacks by attempting to impersonate other users.'}),
-                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                            isDisabled: false,
                         },
                         {
                             type: 'bool',
@@ -5336,7 +5334,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 strong: (msg: string) => <strong>{msg}</strong>,
                             },
                             help_text_markdown: false,
-                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                            isDisabled: false,
                         },
                     ],
                 },
