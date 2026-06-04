@@ -74,6 +74,32 @@ Receive notifications of critical security updates. The sophistication of online
 - [See who's using Mattermost](https://mattermost.com/customers/)
 - [Browse over 700 Mattermost integrations](https://mattermost.com/marketplace/)
 
+## Team admin role updates
+
+When a team uses scheme-managed roles, do not assign `team_admin` directly through the member `roles` field. Use the `schemeRoles` API instead.
+
+Promote a user to Team Admin:
+
+```bash
+curl -X PUT \
+  'https://<mattermost-host>/api/v4/teams/TEAM_ID/members/USER_ID/schemeRoles' \
+  -H 'Authorization: Bearer TOKEN' \
+  -H 'Content-Type: application/json' \
+  --data '{"scheme_user":true,"scheme_admin":true,"scheme_guest":false}'
+```
+
+Demote a user back to Team Member:
+
+```bash
+curl -X PUT \
+  'https://<mattermost-host>/api/v4/teams/TEAM_ID/members/USER_ID/schemeRoles' \
+  -H 'Authorization: Bearer TOKEN' \
+  -H 'Content-Type: application/json' \
+  --data '{"scheme_user":true,"scheme_admin":false,"scheme_guest":false}'
+```
+
+Using the old member roles update flow for a scheme-managed role will return an error equivalent to: `The provided role is managed by a Scheme and therefore cannot be applied directly to a Team Member.`
+
 ## License
 
 See the [LICENSE file](LICENSE.txt) for license rights and limitations.
